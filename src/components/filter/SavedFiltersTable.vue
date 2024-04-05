@@ -4,93 +4,104 @@ import FilterTableRow from "@/components/filter/table/FilterTableRow.vue";
 export default {
   name: "SavedFiltersTable",
   components: {FilterTableRow},
-  emits: ['delete-row'],
-  props: {
-    filters: {  // TODO: Will have to import here from DB instead.
-      type: Array,
-      default: []
-    }
-  },
+  emits: ["delete-filter", "update-filter"],
   data() {
     return {
-      filtersData: [{
+      filters: [{ // TODO: Will have to import here from DB instead.
         name: "uifcgUbXcYSIQrYlLLYgvADFRztDsWztKnsKoIuzjBVGnLJaJEOkBzeryfHEncGzZApMbqzhpfGguNPKGWvFgylVzuAbdxHFqVwDZFaTndRtjkGGvkehrCLnpxtLoVtWqcCIvsTUKlqQqJhSoNDMHiiwRdTIQXEMBKVWHnEvIBNbujQusqxtQmqfoSAELVPIEcsqOqyvvuuKStmVDvwRyDllosAMFnbrLqLhpGyiSmkZNrXUlrQnHwrbbXYDHzk",
         id: 1,
-        criterias: [{
-          filterType: "amount",
-          filterParam: ">=",
-          filterValue: 12
+        selection: 3,
+        criteria: [{
+          type: "amount",
+          param: ">=",
+          value: 12
         },
           {
-            filterType: "title",
-            filterParam: "endsWith",
-            filterValue: "Meow"
+            type: "title",
+            param: "endsWith",
+            value: "Meow"
           },
           {
-            filterType: "date",
-            filterParam: "until",
-            filterValue: "1996-02-25"
+            type: "date",
+            param: "until",
+            value: "1996-02-25"
           }]
       }, {
         name: "Amogus",
         id: 3,
-        criterias: [{
-            filterType: "title",
-            filterParam: "endsWith",
-            filterValue: "Meow"
-          },
+        selection: 1,
+        criteria: [{
+          type: "title",
+          param: "endsWith",
+          value: "Meow"
+        },
           {
-            filterType: "date",
-            filterParam: "until",
-            filterValue: "1996-02-25"
+            type: "date",
+            param: "until",
+            value: "1996-02-25"
           }]
       }, {
         name: "Filter-3",
-        id: 1,
-        criterias: [{
-          filterType: "amount",
-          filterParam: ">=",
-          filterValue: 12
+        id: 15,
+        selection: 2,
+        criteria: [{
+          type: "amount",
+          param: ">=",
+          value: 12
         },
           {
-            filterType: "title",
-            filterParam: "endsWith",
-            filterValue: "Meow"
+            type: "title",
+            param: "endsWith",
+            value: "Meow"
           }]
       }]
     }
   },
+  created() {
+    this.$bus.on("filter-data-changed", this.fetchFilters);
+  },
   methods: {
-    deleteTableRow(filterName) {
-      this.$emit('delete-row', filterName);
+    fetchFilters() {
+      // TODO: Make an Axios request and update the existing filters.
+      // TODO: Should be sorted by name on backend.
+      console.log("Data has been fetched.");
+    },
+    emitDeleteFilterEvent(index) {
+      this.$emit("delete-filter", this.filters[index]);
+    },
+    emitUpdateFilterEvent(index) {
+      this.$emit("update-filter", this.filters[index]);
     }
   },
+  destroyed() {
+    this.$bus.off("filter-data-changed", this.fetchFilters);
+  }
 }
 </script>
 
 <template>
   <div class="table-container">
     <div class="grid-container">
-        <filter-table-row
-            v-for="(filter, index) in filtersData"
-            :filter="filter"
-            :index="index"
-            :key="filter.id"
-            @delete-row="deleteTableRow"
-        />
+      <filter-table-row
+          v-for="(filter, index) in filters"
+          :name="filter.name"
+          :index="index"
+          :key="filter.id"
+          @delete-row="emitDeleteFilterEvent"
+          @update-filter="emitUpdateFilterEvent"/>
     </div>
-</div>
+  </div>
 </template>
 
 <style scoped>
 .table-container {
   display: flex;
-  align-content: center;
   justify-content: center;
+  margin-bottom: 40px;
 }
 
 .grid-container {
-  width: 60%;
+  width: 80%;
   padding: 15px 10px;
   display: grid;
   gap: 10px;
@@ -108,6 +119,12 @@ export default {
 @media only screen and (max-width: 600px) {
   .grid-container {
     width: 100%;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .grid-container {
+    width: 60%;
   }
 }
 </style>

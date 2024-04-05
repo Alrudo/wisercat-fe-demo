@@ -7,24 +7,33 @@ export default {
   data() {
     return {
       showFilterForm: false,
+      showDeleteWarning: false,
+      showUpdateFilterForm: false,
       modalMode: true,
-      filters: []
+      filterToUpdate: null
     }
   },
   methods: {
     toggleAddFilterForm() {
       this.showFilterForm = !this.showFilterForm;
     },
-    saveNewFilter(filter) {
-      this.filters.push(filter);
+    toggleUpdateFilterForm() {
+      this.showUpdateFilterForm = !this.showUpdateFilterForm;
     },
-    deleteSavedFiltersRow(filterName) {
-      for (let index = 0; index < this.filters.length; index++) {
-        if (this.filters[index].name === filterName) {
-          this.filters.splice(index, 1);
-          break;
-        }
-      }
+    updateExistingFilter(filter) {
+      this.filterToUpdate = filter;
+      this.showUpdateFilterForm = true;
+    },
+  },
+  computed: {
+    showAddFilterIntegrated() {
+      return this.showFilterForm && !this.modalMode;
+    },
+    showAddFilterModal() {
+      return this.showFilterForm && this.modalMode;
+    },
+    showModalBackdrop() {
+      return this.showAddFilterModal || this.showDeleteWarning || this.showUpdateFilterForm;
     }
   }
 }
@@ -32,26 +41,25 @@ export default {
 
 <template>
   <saved-filters-table
-      :filters="filters"
-      @delete-row="deleteSavedFiltersRow"
-  />
+      @update-filter="updateExistingFilter"/>
   <div class="container">
     <div
         class="shrink"
-        v-if="showFilterForm && !modalMode">
-      <add-filter-form
-          @save-filter="saveNewFilter"
-          @toggle-form="toggleAddFilterForm"
-      />
+        v-if="showAddFilterIntegrated">
+      <add-filter-form @toggle-form="toggleAddFilterForm"/>
     </div>
 </div>
   <div
       class="backdrop"
-      v-if="showFilterForm && modalMode">
+      v-if="showModalBackdrop">
     <div class="modal">
         <add-filter-form
-            @save-filter="saveNewFilter"
+            v-if="showAddFilterModal"
             @toggle-form="toggleAddFilterForm"/>
+        <add-filter-form
+            v-else-if="showUpdateFilterForm"
+            :filter="filterToUpdate"
+            @toggle-form="toggleUpdateFilterForm"/>
     </div>
   </div>
   <div class="main-buttons flex-center">
@@ -115,7 +123,7 @@ export default {
   align-items: center;
 }
 
-.criteria-input {
+.criterion-input {
   background-color: white;
   border: 1px solid var(--font-grey);
   color: var(--font-grey);
@@ -123,6 +131,21 @@ export default {
   padding: 5px;
   width: 100%;
   box-sizing: border-box;
+}
+
+.criterion-input:focus-visible {
+  outline: none;
+  border: 1px solid var(--button-main);
+}
+
+.error-input {
+  outline: 2px solid red;
+  border: none;
+}
+
+.error-input:focus-visible {
+  outline: 2px solid red;
+  border: none;
 }
 
 .container {
@@ -133,11 +156,6 @@ export default {
 
 .shrink {
   width: 80%;
-}
-
-.criteria-input:focus-visible {
-  outline: none;
-  border: 1px solid var(--button-main);
 }
 
 .main-buttons {
@@ -180,16 +198,13 @@ export default {
 }
 
 @media only screen and (max-width: 600px) {
-  .modal {
-    width: 100%;
-  }
-  .shrink {
+  .modal, .shrink {
     width: 100%;
   }
 }
 
 @media only screen and (min-width: 1200px) {
-  .modal {
+  .modal, .shrink {
     width: 60%;
   }
 }

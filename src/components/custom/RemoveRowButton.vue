@@ -1,14 +1,19 @@
 <script>
 export default {
   name: "RemoveRowButton",
-  emits: ["delete-row"]
+  emits: ["delete-row"],
+  methods: {
+    emitDeleteRowEvent() {
+      this.$emit('delete-row');
+    }
+  }
 }
 </script>
 
 <template>
   <button
       class="remove-row-button"
-      @click="$emit('delete-row')"
+      @click="emitDeleteRowEvent"
   >—</button>
 </template>
 

@@ -21,7 +21,7 @@ export default {
       nextIndex: 2,
       selection: 1,
       erroredCriteria: {1: false},
-      criteria: {1: {type: "amount", param: ">", value: 1}}
+      criteria: {1: {type: "amount", param: ">", value: "1"}}
     }
   },
   created() {
@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     addNewRow() {
-      this.criteria[this.nextIndex] = {type: "amount", param: ">", value: 1};
+      this.criteria[this.nextIndex] = {type: "amount", param: ">", value: "1"};
       this.erroredCriteria[this.nextIndex] = false;
       this.nextIndex++;
     },
@@ -82,6 +82,7 @@ export default {
         console.log(filter);
       } else {
         console.log("I need to make an add request.");
+        console.log(filter);
       }
       this.$bus.emit("filter-data-changed", filter);
       this.$emit("toggle-form");
@@ -278,19 +279,6 @@ h3 {
 
 .filter-footer {
   background-color: #f2f2f2;
-}
-
-.filter-footer .footer-buttons {
-  width: 220px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.footer-buttons > * {
-  color: white;
-  height: 1.6rem;
-  width: 100px;
-  border-radius: 5px;
 }
 
 .add-row {

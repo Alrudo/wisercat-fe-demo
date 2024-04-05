@@ -14,12 +14,12 @@ export default {
         criteria: [{
           type: "amount",
           param: ">=",
-          value: 12
+          value: "72"
         },
           {
             type: "title",
             param: "endsWith",
-            value: "Meow"
+            value: "World!"
           },
           {
             type: "date",
@@ -37,7 +37,7 @@ export default {
         },
           {
             type: "date",
-            param: "until",
+            param: "on",
             value: "1996-02-25"
           }]
       }, {
@@ -46,12 +46,12 @@ export default {
         selection: 2,
         criteria: [{
           type: "amount",
-          param: ">=",
-          value: 12
+          param: "<",
+          value: "125"
         },
           {
             type: "title",
-            param: "endsWith",
+            param: "contains",
             value: "Meow"
           }]
       }]
@@ -59,6 +59,7 @@ export default {
   },
   created() {
     this.$bus.on("filter-data-changed", this.fetchFilters);
+    this.$bus.on("perform-filter-deletion", this.deleteExistingFilter);
   },
   methods: {
     fetchFilters() {
@@ -71,17 +72,27 @@ export default {
     },
     emitUpdateFilterEvent(index) {
       this.$emit("update-filter", this.filters[index]);
+    },
+    deleteExistingFilter(filter) {
+      // TODO: Make an Axios request and update the existing filters.
+      console.log("I want to delete this filter:");
+      console.log(filter);
+      this.filters = this.filters.filter(it => it.id !== filter.id);
+      this.fetchFilters();
     }
   },
   destroyed() {
     this.$bus.off("filter-data-changed", this.fetchFilters);
+    this.$bus.off("perform-filter-deletion", this.deleteExistingFilter);
   }
 }
 </script>
 
 <template>
   <div class="table-container">
-    <div class="grid-container">
+    <div
+        class="grid-container"
+        v-if="filters.length > 0">
       <filter-table-row
           v-for="(filter, index) in filters"
           :name="filter.name"
@@ -90,6 +101,12 @@ export default {
           @delete-row="emitDeleteFilterEvent"
           @update-filter="emitUpdateFilterEvent"/>
     </div>
+    <div
+        class="no-content"
+        v-else>
+      <p>There is currently no saved filters to display.</p>
+      <p>Try adding one.</p>
+    </div>
   </div>
 </template>
 
@@ -97,14 +114,17 @@ export default {
 .table-container {
   display: flex;
   justify-content: center;
+  padding-top: 20px;
   margin-bottom: 40px;
 }
 
 .grid-container {
   width: 80%;
-  padding: 15px 10px;
+  margin: 15px 10px;
   display: grid;
   gap: 10px;
+  border: 1px solid #cecece;
+  border-radius: 5px;
   grid-template-columns: 1fr;
 }
 
@@ -114,6 +134,14 @@ export default {
 
 .grid-container > * {
   padding: 5px;
+}
+
+.no-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
 }
 
 @media only screen and (max-width: 600px) {

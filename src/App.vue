@@ -1,16 +1,18 @@
 <script>
 import SavedFiltersTable from "@/components/filter/SavedFiltersTable.vue";
 import AddFilterForm from "@/components/filter/AddFilterForm.vue";
+import DeleteFilterWarningModal from "@/components/custom/DeleteFilterWarningModal.vue";
 
 export default {
-  components: {SavedFiltersTable, AddFilterForm},
+  components: {SavedFiltersTable, AddFilterForm, DeleteFilterWarningModal},
   data() {
     return {
       showFilterForm: false,
       showDeleteWarning: false,
       showUpdateFilterForm: false,
       modalMode: true,
-      filterToUpdate: null
+      filterToUpdate: null,
+      filterToDelete: null
     }
   },
   methods: {
@@ -20,10 +22,21 @@ export default {
     toggleUpdateFilterForm() {
       this.showUpdateFilterForm = !this.showUpdateFilterForm;
     },
+    toggleDeleteFilterModal() {
+      this.showDeleteWarning = !this.showDeleteWarning;
+    },
     updateExistingFilter(filter) {
       this.filterToUpdate = filter;
       this.showUpdateFilterForm = true;
     },
+    confirmDeleteExistingFilter(filter) {
+      this.filterToDelete = filter;
+      this.showDeleteWarning = true;
+    },
+    performDeleteExistingFilter() {
+      this.$bus.emit("perform-filter-deletion", this.filterToDelete);
+      this.showDeleteWarning = false;
+    }
   },
   computed: {
     showAddFilterIntegrated() {
@@ -41,7 +54,8 @@ export default {
 
 <template>
   <saved-filters-table
-      @update-filter="updateExistingFilter"/>
+      @update-filter="updateExistingFilter"
+      @delete-filter="confirmDeleteExistingFilter"/>
   <div class="container">
     <div
         class="shrink"
@@ -60,6 +74,11 @@ export default {
             v-else-if="showUpdateFilterForm"
             :filter="filterToUpdate"
             @toggle-form="toggleUpdateFilterForm"/>
+        <delete-filter-warning-modal
+            v-else-if="showDeleteWarning"
+            :name="filterToDelete.name"
+            @toggle-modal="toggleDeleteFilterModal"
+            @delete-filter="performDeleteExistingFilter"/>
     </div>
   </div>
   <div class="main-buttons flex-center">
@@ -85,9 +104,11 @@ export default {
   --button-main-hover: #1b82e3;
   --button-secondary: #757575;
   --button-secondary-hover: #595959;
+  --button-warning: #930202;
+  --button-warning-hover: #e05252;
   --button-remove-row: #f24583;
   --button-remove-row-hover: #fa6fa1;
-  --font-grey: #505050;
+  --font-grey: #505050;;
 }
 
 * {
@@ -115,6 +136,15 @@ export default {
 
 .secondary-btn:hover {
   background-color: var(--button-secondary-hover);
+}
+
+.warning-btn {
+  background-color: var(--button-warning);
+  border: 1px solid var(--button-warning)
+}
+
+.warning-btn:hover {
+  background-color: var(--button-warning-hover);
 }
 
 .flex-center {
@@ -146,6 +176,19 @@ export default {
 .error-input:focus-visible {
   outline: 2px solid red;
   border: none;
+}
+
+.footer-buttons {
+  width: 220px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer-buttons > * {
+  color: white;
+  height: 1.6rem;
+  width: 100px;
+  border-radius: 5px;
 }
 
 .container {

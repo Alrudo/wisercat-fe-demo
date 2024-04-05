@@ -58,9 +58,9 @@ export default {
     },
     setDefaultValues() {
       const defaultValues = {
-        amount: {param: ">", value: 1},
+        amount: {param: ">", value: "1"},
         title: {param: "startsWith", value: ""},
-        date: {param: "From", value: ""}
+        date: {param: "from", value: ""}
       };
       const values = defaultValues[this.type] || defaultValues.amount;
       this.param = values.param;

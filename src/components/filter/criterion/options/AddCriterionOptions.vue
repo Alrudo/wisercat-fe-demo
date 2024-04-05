@@ -15,14 +15,14 @@ export default {
       required: false
     },
     valueProp: {
-      type: Number,
+      type: String,
       required: false
     }
   },
   data() {
     return {
       param: this.paramProp || ">",
-      value: this.valueProp || 1,
+      value: Number(this.valueProp) || 1,
       paramOptions: [
         {text: "More", value: ">"},
         {text: "More or equal", value: ">="},
@@ -43,7 +43,7 @@ export default {
       this.$emit("change-param", this.param);
     },
     emitChangeValueEvent() {
-      this.$emit("change-value", this.value); // TODO: Make it String?
+      this.$emit("change-value", String(this.value));
     },
     emitDeleteRowEvent() {
       this.$emit("delete-row");

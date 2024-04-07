@@ -1,29 +1,28 @@
 # wisercat-fe-demo
+This project is built as a demo application for Wisercat by Aleksandr Rudoi.
 
-This template should help get you started developing with Vue 3 in Vite.
+## Built with
+- node v20.12.1
+- npm 10.5.0
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
+## Running guide
+Start by running
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
+Compile and Hot-Reload for development on port 4000:
+```bash
 npm run dev
 ```
 
-### Compile and Minify for Production
+Port can be changed in [package.json](package.json):
+```yaml
+ "dev": "vite --port {desired_port}"
+```
 
-```sh
-npm run build
+Project requires running backend application on port 8080. Port can be changed
+in [ApiService.js](src/js/ApiService.js):
+```yaml
+baseURL: "http://localhost:8080/api/v1/demo",
 ```

@@ -53,6 +53,10 @@ export default {
       }
       delete this.criteria[index];
       delete this.erroredCriteria[index];
+
+      if (index === this.selection) {
+        this.selection = 1;
+      }
     },
     updateFilterState(newState) {
       const index = Object.keys(newState)[0];

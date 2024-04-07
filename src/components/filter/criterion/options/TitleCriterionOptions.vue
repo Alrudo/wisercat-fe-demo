@@ -31,6 +31,17 @@ export default {
       ]
     }
   },
+  watch: {
+    // Help to reset data for Chrome and Opera.
+    // Seems like firefox rerenders component while others retain previous data.
+    paramProp: {
+      immediate: true,
+      handler() {
+        this.param = this.paramProp || "startsWith";
+        this.value = this.valueProp || ""
+      }
+    }
+  },
   methods: {
     emitChangeParamEvent() {
       this.$emit('change-param', this.param)
@@ -41,7 +52,7 @@ export default {
     emitDeleteRowEvent() {
       this.$emit('delete-row');
     }
-  }
+  },
 }
 </script>
 

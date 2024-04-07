@@ -18,7 +18,6 @@ export default {
   },
   methods: {
     fetchFilters() {
-      console.log("Fetching data!")
       FilterService.getAllFilters()
           .then(response => this.filters = response.data);
     },

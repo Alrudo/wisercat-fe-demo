@@ -33,6 +33,17 @@ export default {
       ]
     }
   },
+  watch: {
+    // Help to reset data for Chrome and Opera.
+    // Seems like firefox rerenders component while others retain previous data.
+    paramProp: {
+      immediate: true,
+      handler() {
+        this.param = this.paramProp || ">";
+        this.value = this.valueProp || 1;
+      }
+    }
+  },
   methods: {
     validateInputKey(event) {
       if (event.key.length === 1 && isNaN(Number(event.key))) {

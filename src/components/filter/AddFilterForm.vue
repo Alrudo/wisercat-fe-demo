@@ -1,6 +1,7 @@
 <script>
 import FilterCriterionForm from "@/components/filter/criterion/FilterCriterionForm.vue";
 import SelectionSwitchButton from "@/components/filter/selection/SelectionSwitchButton.vue";
+import { FilterService } from "@/js/FilterService.js";
 
 export default {
   name: "AddFilterForm",
@@ -74,18 +75,21 @@ export default {
       }
 
       const filter = {name: this.filterName, criteria: criteria, selection: this.selection};
-      // TODO: Call Axios to save new filter to DB.
-      // TODO: Check if this.filter is present. If true - make update request, else add request.
+
       if (this.id) {
         filter.id = this.id;
-        console.log("I need to make an update request.");
-        console.log(filter);
-      } else {
-        console.log("I need to make an add request.");
-        console.log(filter);
+        FilterService.updateFilter(filter)
+            .then(() => {
+              this.$bus.emit("filter-data-changed", filter);
+              this.$emit("toggle-form");
+            });
+        return;
       }
-      this.$bus.emit("filter-data-changed", filter);
-      this.$emit("toggle-form");
+      FilterService.saveFilter(filter)
+          .then(() => {
+            this.$bus.emit("filter-data-changed", filter);
+            this.$emit("toggle-form");
+          })
     },
     isFilterValid() {
       if (this.filterName.length < 1) {

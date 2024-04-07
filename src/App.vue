@@ -34,7 +34,7 @@ export default {
       this.showDeleteWarning = true;
     },
     performDeleteExistingFilter() {
-      this.$bus.emit("perform-filter-deletion", this.filterToDelete);
+      this.$bus.emit("perform-filter-deletion", this.filterToDelete.id);
       this.showDeleteWarning = false;
     }
   },

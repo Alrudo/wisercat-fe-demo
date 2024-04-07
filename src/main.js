@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import App from '@/App.vue'
-import eventBus from "@/js/eventBus.js";
+import EventBus from "@/js/EventBus.js";
 
 const app = createApp(App)
-app.config.globalProperties.$bus = eventBus;
+app.config.globalProperties.$bus = EventBus;
 
 app.mount('#app');

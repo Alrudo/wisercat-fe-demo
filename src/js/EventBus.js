@@ -1,8 +1,8 @@
 import { createApp } from "vue";
 
-const app = createApp({});
+createApp({});
 
-const eventBus = {
+const EventBus = {
     listeners: {},
 
     emit(event, ...args) {
@@ -34,4 +34,4 @@ const eventBus = {
     }
 };
 
-export default eventBus;
+export default EventBus;
